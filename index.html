@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pedidos Cacheadu's</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --plum-900:#33122f; --plum-800:#4a1a4d; --plum-100:#f4ecf6;
+    --paper:#fbf8fa; --card:#ffffff; --ink:#2a1c2c; --ink-soft:#7a6a7c;
+    --gold:#b9793a; --gold-ink:#7a4d1f; --line:#e7dce9;
+    --shadow: 0 1px 2px rgba(58,20,64,.06), 0 8px 24px rgba(58,20,64,.08);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --plum-900:#f4ecf6; --plum-800:#e7c9ec; --plum-100:#3a1f3d;
+      --paper:#221327; --card:#2c1830; --ink:#f3e9f4; --ink-soft:#c3aec5;
+      --gold:#e0a860; --gold-ink:#f4cf9c; --line:#4a2e4d;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:'Manrope',system-ui,-apple-system,Segoe UI,sans-serif;
+    padding:32px 16px 64px;
+  }
+  .wrap{ max-width:720px; margin:0 auto; }
+  h1{ font-family:'Fraunces',serif; font-size:clamp(1.6rem,4vw,2.2rem); color:var(--plum-900); margin:0 0 6px; font-weight:600;}
+  p.lead{ color:var(--ink-soft); margin:0 0 28px; max-width:60ch; }
+  .list{ display:flex; flex-direction:column; gap:12px; }
+  a.card{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:16px 18px; text-decoration:none; color:var(--ink); box-shadow:var(--shadow);
+  }
+  a.card:hover{ border-color:var(--gold); }
+  a.card .t{ font-weight:700; font-size:1rem; color:var(--plum-900); }
+  a.card .s{ display:block; font-weight:400; font-size:.82rem; color:var(--ink-soft); margin-top:2px;}
+  a.card .arrow{ color:var(--gold-ink); font-size:1.2rem; }
+  footer{ margin-top:32px; color:var(--ink-soft); font-size:.8rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Pedidos Cacheadu's</h1>
+  <p class="lead">Formulários de pedido por tabela de preço. Escolha a tabela correspondente ao cliente.</p>
+  <div class="list">
+    <a class="card" href="distribuidor-rj.html"><span><span class="t">Distribuidor RJ</span><span class="s">Atacado — distribuidores do Rio de Janeiro</span></span><span class="arrow">→</span></a>
+    <a class="card" href="cabeleireira-rj.html"><span><span class="t">Cabeleireira RJ</span><span class="s">Cabeleireiras e salões do Rio de Janeiro</span></span><span class="arrow">→</span></a>
+    <a class="card" href="cabeleireira-regiao-dos-lagos.html"><span><span class="t">Cabeleireira Região dos Lagos</span><span class="s">Cabeleireiras e salões da Região dos Lagos</span></span><span class="arrow">→</span></a>
+    <a class="card" href="distribuidor-br.html"><span><span class="t">Distribuidor BR</span><span class="s">Atacado — distribuidores de outros estados</span></span><span class="arrow">→</span></a>
+    <a class="card" href="cabeleireira-br.html"><span><span class="t">Cabeleireira BR</span><span class="s">Cabeleireiras e salões de outros estados</span></span><span class="arrow">→</span></a>
+    <a class="card" href="varejo-site.html"><span><span class="t">Varejo (Site)</span><span class="s">Preços de varejo, iguais ao site</span></span><span class="arrow">→</span></a>
+  </div>
+  <footer>Cacheadu's Cosmetics · uso interno</footer>
+</div>
+</body>
+</html>
