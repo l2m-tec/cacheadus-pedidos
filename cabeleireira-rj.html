@@ -181,8 +181,34 @@
   .empty-note{ color:var(--ink-soft); font-size:.85rem; text-align:center; padding:20px 0;}
   [hidden]{ display:none !important; }
 </style>
+<style>
+  .authgate{ position:fixed; inset:0; z-index:200; background:var(--paper); display:flex; align-items:center; justify-content:center; padding:24px; }
+  .authbox{ width:100%; max-width:360px; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:28px 24px; box-shadow:var(--shadow); }
+  .authbrand{ font-family:'Fraunces',serif; font-weight:600; font-size:1.2rem; color:var(--plum-800); margin-bottom:4px;}
+  .authbox h2{ font-family:'Fraunces',serif; margin:0 0 6px; color:var(--plum-900); font-size:1.3rem;}
+  .authbox p{ color:var(--ink-soft); font-size:.85rem; margin:0 0 18px;}
+  .authbox label{ display:flex; flex-direction:column; gap:4px; font-size:.78rem; font-weight:600; color:var(--ink-soft); margin-bottom:12px;}
+  .authbox input{ font:inherit; font-size:.95rem; padding:10px 12px; border-radius:8px; border:1px solid var(--line); background:var(--paper); color:var(--ink); width:100%; }
+  .authbox button{ width:100%; margin-top:6px; background:var(--gold); color:#2a1a0c; border:none; border-radius:11px; padding:12px; font-weight:700; cursor:pointer; font-size:.92rem;}
+  .autherr{ color:#c0392b !important; font-size:.8rem !important; margin:10px 0 0 !important; }
+  body.locked .page-content{ display:none !important; }
+  body:not(.locked) .authgate{ display:none !important; }
+</style>
 </head>
-<body>
+<body class="locked"><div class="authgate" id="authgate">
+  <div class="authbox">
+    <div class="authbrand">Cacheadu's</div>
+    <h2>Area restrita</h2>
+    <p>Acesso exclusivo — Cabeleireira RJ. Informe o login enviado pela Cacheadu's.</p>
+    <form id="authform-cabeleireirarj">
+      <label>Usuario<input type="text" id="au-user-cabeleireirarj" autocomplete="username" required></label>
+      <label>Senha<input type="password" id="au-pass-cabeleireirarj" autocomplete="current-password" required></label>
+      <button type="submit">Entrar</button>
+      <p class="autherr" id="autherr-cabeleireirarj" hidden>Usuario ou senha incorretos.</p>
+    </form>
+  </div>
+</div>
+<div class="page-content">
 
 
 <div class="wrap">
@@ -458,5 +484,27 @@ document.getElementById('btn-copy').addEventListener('click', async ()=>{
 });
 </script>
 
+</div><script>
+(function(){
+  var EXPECTED_USER = "cabeleireirarj";
+  var EXPECTED_PASS = "Cacheadus@RJ2";
+  var KEY = "cacheadus_auth_cabeleireirarj";
+  var body = document.body;
+  try{
+    if(localStorage.getItem(KEY) === "1"){ body.classList.remove('locked'); }
+  }catch(e){}
+  document.getElementById('authform-cabeleireirarj').addEventListener('submit', function(e){
+    e.preventDefault();
+    var u = document.getElementById('au-user-cabeleireirarj').value.trim();
+    var p = document.getElementById('au-pass-cabeleireirarj').value;
+    if(u === EXPECTED_USER && p === EXPECTED_PASS){
+      body.classList.remove('locked');
+      try{ localStorage.setItem(KEY, "1"); }catch(err){}
+    } else {
+      document.getElementById('autherr-cabeleireirarj').hidden = false;
+    }
+  });
+})();
+</script>
 </body>
 </html>
