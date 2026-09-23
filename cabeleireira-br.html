@@ -26,6 +26,8 @@
     --gold-ink:#7a4d1f;
     --line:#e7dce9;
     --success:#2f7d4f;
+    --danger:#b23b3b;
+    --danger-ink:#ffffff;
     --shadow: 0 1px 2px rgba(58,20,64,.06), 0 8px 24px rgba(58,20,64,.08);
     color-scheme: light;
   }
@@ -43,6 +45,8 @@
       --gold-ink:#f4cf9c;
       --line:#4a2e4d;
       --success:#7ed8a0;
+      --danger:#e08a8a;
+      --danger-ink:#2a1230;
       --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
       color-scheme: dark;
     }
@@ -60,6 +64,8 @@
     --gold-ink:#f4cf9c;
     --line:#4a2e4d;
     --success:#7ed8a0;
+    --danger:#e08a8a;
+    --danger-ink:#2a1230;
     --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
     color-scheme: dark;
   }
@@ -154,6 +160,12 @@
   :root[data-theme="dark"] .bar, @media (prefers-color-scheme:dark){ }
   .bar .totals{ font-size:.85rem; }
   .bar .totals b{ font-family:'Fraunces',serif; font-size:1.15rem; font-variant-numeric:tabular-nums; display:block; }
+  .bar .bar-actions{ display:flex; align-items:center; gap:6px; }
+  .bar button.clear-link{
+    background:none; border:none; color:var(--plum-100); opacity:.65; text-decoration:underline;
+    font-size:.78rem; font-family:inherit; cursor:pointer; padding:6px 4px; white-space:nowrap;
+  }
+  .bar button.clear-link:disabled{ opacity:.3; cursor:not-allowed; text-decoration:none; }
   .bar button.cta{
     background:var(--gold); color:#2a1a0c; border:none; border-radius:11px; padding:11px 18px;
     font-weight:700; font-size:.88rem; cursor:pointer; white-space:nowrap;
@@ -177,6 +189,8 @@
     border:1px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer; text-decoration:none;
   }
   .sheet .actions .whatsapp{ background:#25D366; color:#06280f; border-color:#25D366; }
+  .sheet .actions .danger{ background:var(--danger); color:var(--danger-ink); border-color:var(--danger); }
+  .sheet .actions .ghost{ background:transparent; }
   .sheet .close{ background:none; border:none; color:var(--ink-soft); font-size:1.3rem; float:right; cursor:pointer; line-height:1;}
   .empty-note{ color:var(--ink-soft); font-size:.85rem; text-align:center; padding:20px 0;}
   [hidden]{ display:none !important; }
@@ -267,7 +281,10 @@
 <div class="barwrap">
   <div class="bar">
     <div class="totals"><span id="bar-count">0 itens</span><b id="bar-total">R$ 0,00</b></div>
-    <button class="cta" id="bar-btn" disabled>Ver pedido</button>
+    <div class="bar-actions">
+      <button class="clear-link" id="clear-btn" disabled>Limpar carrinho</button>
+      <button class="cta" id="bar-btn" disabled>Ver pedido</button>
+    </div>
   </div>
 </div>
 
@@ -281,6 +298,18 @@
     <div class="actions">
       <button id="btn-copy">Copiar texto</button>
       <a id="btn-whats" class="whatsapp" href="#" target="_blank" rel="noopener">Enviar no WhatsApp</a>
+    </div>
+  </div>
+</div>
+
+<div class="sheet-overlay" id="clear-confirm" hidden>
+  <div class="sheet">
+    <button class="close" id="clear-confirm-x" aria-label="Fechar">×</button>
+    <h2>Limpar carrinho?</h2>
+    <p class="sub">Isso zera as quantidades de todos os produtos marcados nesta tabela, para você montar um pedido diferente do zero. Os dados do cliente preenchidos acima continuam salvos.</p>
+    <div class="actions">
+      <button id="clear-cancel" class="ghost">Cancelar</button>
+      <button id="clear-confirm-btn" class="danger">Sim, limpar carrinho</button>
     </div>
   </div>
 </div>
@@ -385,6 +414,7 @@ function recalc(){
   document.getElementById('bar-count').textContent = count + (count===1 ? ' item' : ' itens');
   document.getElementById('bar-total').textContent = fmtBRL(total);
   document.getElementById('bar-btn').disabled = count === 0;
+  document.getElementById('clear-btn').disabled = count === 0;
 
   return {count, total, weight, lines};
 }
@@ -467,6 +497,22 @@ document.getElementById('bar-btn').addEventListener('click', ()=>{
 });
 document.getElementById('sheet-close').addEventListener('click', ()=> sheet.hidden = true);
 sheet.addEventListener('click', (e)=>{ if(e.target === sheet) sheet.hidden = true; });
+
+// Clear cart (with in-page confirmation — no native confirm() available)
+const clearConfirm = document.getElementById('clear-confirm');
+document.getElementById('clear-btn').addEventListener('click', ()=>{ clearConfirm.hidden = false; });
+document.getElementById('clear-confirm-x').addEventListener('click', ()=> clearConfirm.hidden = true);
+document.getElementById('clear-cancel').addEventListener('click', ()=> clearConfirm.hidden = true);
+clearConfirm.addEventListener('click', (e)=>{ if(e.target === clearConfirm) clearConfirm.hidden = true; });
+document.getElementById('clear-confirm-btn').addEventListener('click', ()=>{
+  state.qty = {};
+  persist();
+  document.querySelectorAll('.qty input').forEach(inp => { inp.value = 0; });
+  allSkuNodes().forEach(wrap=>{ const sku = wrap.dataset.sku; if(sku) updateLineDisplay(wrap, sku); });
+  recalc();
+  clearConfirm.hidden = true;
+  sheet.hidden = true;
+});
 
 document.getElementById('btn-copy').addEventListener('click', async ()=>{
   const btn = document.getElementById('btn-copy');
